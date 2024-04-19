@@ -37,7 +37,7 @@ services:
       - appnetwork
 
   certbot:
-    image: certbot/certbot:1.21.0
+    image: certbot/certbot:latest
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
     command: certonly --webroot --webroot-path=/var/www/certbot --agree-tos --no-eff-email --email nanjiang.shu@nbis.se -d ortholog-seeker.nbiswebapp.bioshu.se -w /var/www/certbot -d app1.nbiswebapp.bioshu.se -w /var/www/certbot
     volumes:
