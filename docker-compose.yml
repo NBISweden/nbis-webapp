@@ -29,28 +29,12 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/.htpasswd-ortholog-seeker:/etc/nginx/.htpasswd-orthology-seeker:ro
       - ./nginx/.htpasswd-app1:/etc/nginx/.htpasswd-app1:ro
-      - certbot-etc:/etc/letsencrypt  # Mount Certbot configuration directory
+      - /etc/letsencrypt:/etc/letsencrypt  # Mount Certbot configuration directory
     depends_on:
       - shiny-ortholog-seeker
       - shiny-app1
     networks:
       - appnetwork
 
-  certbot:
-    image: certbot/certbot:latest
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
-    command: certonly --webroot --webroot-path=/var/www/certbot --agree-tos --no-eff-email --email nanjiang.shu@nbis.se -d ortholog-seeker.nbiswebapp.bioshu.se -w /var/www/certbot -d app1.nbiswebapp.bioshu.se -w /var/www/certbot
-    volumes:
-      - certbot-etc:/etc/letsencrypt  # Mount Certbot configuration directory
-      - certbot-log:/var/log/letsencrypt  # Mount log directory
-      - certbot-www:/var/www/certbot  # Mount webroot directory
-    networks:
-      - appnetwork
-
 networks:
   appnetwork:
-
-volumes:
-  certbot-etc:
-  certbot-log:
-  certbot-www:
