@@ -2,23 +2,19 @@ version: '3.8'
 
 services:
 
-  shiny-ortholog-seeker:
-    image: ortholog-seeker:latest
+  shiny-app2: # a dummy server for testing
+    image: shinyapp2:latest
     build: 
-      context: ./Ortholog_Seeker
+      context: ./app2
       dockerfile: Dockerfile
-    networks:
-      - appnetwork
-
-  shiny-app1: # a dummy server for testing
-    image: shinyapp1:latest
-    build: 
-      context: ./app1
-      dockerfile: Dockerfile
+    ports:
+      - "3838:3838"
     volumes:
-      - ./app1/app.R:/usr/src/app/app.R
+      - ./app2/app.R:/usr/src/app/app.R
     networks:
       - appnetwork
+    restart: always
+
 
   nginx:
     image: nginx:latest
@@ -26,15 +22,29 @@ services:
       - "80:80"
       - "443:443"  # Add port for SSL
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ${NGINX_CONF:-./nginx/nginx.conf}:/etc/nginx/nginx.conf:ro
       - ./nginx/.htpasswd-ortholog-seeker:/etc/nginx/.htpasswd-orthology-seeker:ro
-      - ./nginx/.htpasswd-app1:/etc/nginx/.htpasswd-app1:ro
-      - /etc/letsencrypt:/etc/letsencrypt  # Mount Certbot configuration directory
+      - ./nginx/.htpasswd-app2:/etc/nginx/.htpasswd-app2:ro
+      - ./certbot/etc/letsencrypt:/etc/letsencrypt  # Mount Certbot configuration directory
+      - ./certbot/www/:/var/www/letsencrypt
     depends_on:
-      - shiny-ortholog-seeker
-      - shiny-app1
+      - shiny-app2
     networks:
       - appnetwork
+    restart: always
+
+  certbot:
+    image: certbot/certbot:latest
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    volumes:
+      - ./certbot/etc/letsencrypt:/etc/letsencrypt
+      - ./certbot/www/:/var/www/letsencrypt
+      - ./certbot/log:/var/log/letsencrypt 
+    networks:
+      - appnetwork
+    depends_on:
+      - nginx
+    restart: always
 
 networks:
   appnetwork:
