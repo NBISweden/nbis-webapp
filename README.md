@@ -15,11 +15,30 @@ htpasswd -c nginx/.htpasswd-ortholog-seeker <username>
 
 ### Deploy 
 
-The services can be deployed by
+#### Deploy without TLS
+
+To deploy the service without TLS, run the following command
 
 ```
-docker compose up -d
+. proj.sh
+deploy-no-ssl
 ```
+
+#### Deploy with TLS 
+
+To deploy the service with TLS enabled, run the following command
+> make sure that the DNS are mapped properly for the server names configured in the [nginx.conf](./nginx/nginx.conf) file.
+
+```
+. proj.sh
+deploy-with-ssl
+```
+
+### How to add a new web application
+
+To add a new web application to the setup, 
+1. add this application as a new service in the [docker-compose.yml](./docker-compose.yml) 
+2. add the nginx configuration in both [nginx.conf](./nginx/nginx.conf) and [nginx-ssl.conf](./nginx/nginx-ssl.conf)
 
 ### Testing
 There is a dummy Shiny application `app1` included in the setup. The hostname is `app1.nbiswebapp.bioshu.se` and 

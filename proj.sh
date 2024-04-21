@@ -7,7 +7,7 @@ deploy-no-ssl() {
     docker compose -f docker-compose.yml --env-file .env-no-ssl up -d
 }
 
-deploy-ssl() {
+deploy-with-ssl() {
     echo "Deploying project with SSL"
     hostnames=$(grep server_name nginx/nginx.conf | awk '{print $2}' | sed 's/;$//' | sort -u )
     hostname_with_ssl=$(sudo find certbot/etc/letsencrypt/live -name "fullchain.pem" | xargs dirname | xargs basename | sort -u) || echo "no sudo rights"
