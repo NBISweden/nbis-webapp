@@ -8,7 +8,7 @@ services:
       context: ./apps/app1
       dockerfile: Dockerfile
     volumes:
-      - ./app1/app.R:/usr/src/app/app.R
+      - ./apps/app1/app.R:/usr/src/app/app.R
     networks:
       - appnetwork
     restart: always
