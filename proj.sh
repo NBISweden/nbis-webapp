@@ -1,4 +1,5 @@
 # this script contains a set of helper functions to deploy the project.
+#!/bin/bash set -e
 
 deploy-no-ssl() {
     echo "Deploying project without SSL"
@@ -9,7 +10,7 @@ deploy-no-ssl() {
 deploy-ssl() {
     echo "Deploying project with SSL"
     hostnames=$(grep server_name nginx/nginx.conf | awk '{print $2}' | sed 's/;$//' | sort -u )
-    hostname_with_ssl=$(sudo find certbot/etc/letsencrypt/live -name "fullchain.pem" | xargs dirname | xargs basename | sort -u) || echo "no sudo rights" && exit 1
+    hostname_with_ssl=$(sudo find certbot/etc/letsencrypt/live -name "fullchain.pem" | xargs dirname | xargs basename | sort -u) || echo "no sudo rights"
     docker compose down 
     if [ "$hostnames" != "$hostname_with_ssl" ]; then # need to create the certificate first
         docker compose -f docker-compose.yml --env-file .env-no-ssl up -d
