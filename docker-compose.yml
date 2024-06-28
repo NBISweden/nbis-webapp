@@ -16,7 +16,7 @@ services:
     networks:
       - appnetwork
     volumes:
-      - ./apps/webapp-dummy:/webapp
+      - ./apps/webapp-dummy:/usr/share/nginx/html
     restart: always
 
   nginx:
