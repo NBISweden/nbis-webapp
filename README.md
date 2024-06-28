@@ -10,7 +10,7 @@ Create necessary login credentials in the `nginx` folder by the command `htpassw
 
 
 ```
-htpasswd -c nginx/.htpasswd-python2024 <username>
+htpasswd -c nginx/.htpasswd-python-bioinfo <username>
 ```
 
 ### Deploy 

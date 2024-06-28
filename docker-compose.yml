@@ -18,7 +18,7 @@ services:
     networks:
       - appnetwork
     volumes:
-      - ./python-programming-bioinfo:/webapp
+      - ./webapp:/webapp
     restart: always
 
   nginx:
