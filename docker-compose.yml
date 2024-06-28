@@ -16,7 +16,7 @@ services:
     networks:
       - appnetwork
     volumes:
-      - ./apps/webapp-dummy:/usr/share/nginx/html
+      - ./apps/python-programming-bioinfo:/usr/share/nginx/html
     restart: always
 
   nginx:
