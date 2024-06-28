@@ -13,13 +13,12 @@ services:
       - appnetwork
     restart: always
 
-  shiny-ortholog-seeker:
-    image: ortholog-seeker:latest
-    build: 
-      context: ./apps/Ortholog_Seeker
-      dockerfile: Dockerfile
+  python-bioinfo:
+    image: nginx:latest 
     networks:
       - appnetwork
+    volumes:
+      - ./python-programming-bioinfo:/webapp
     restart: always
 
   nginx:
@@ -29,13 +28,13 @@ services:
       - "443:443"  # Add port for SSL
     volumes:
       - ${NGINX_CONF:-./nginx/nginx.conf}:/etc/nginx/nginx.conf:ro
-      - ./nginx/.htpasswd-ortholog-seeker:/etc/nginx/.htpasswd-ortholog-seeker:ro
+      - ./nginx/.htpasswd-python-bioinfo:/etc/nginx/.htpasswd-python-bioinfo
       - ./nginx/.htpasswd-app1:/etc/nginx/.htpasswd-app1:ro
       - ./certbot/etc/letsencrypt:/etc/letsencrypt  # Mount Certbot configuration directory
       - ./certbot/www/:/var/www/letsencrypt
     depends_on:
       - shiny-app1
-      - shiny-ortholog-seeker
+      - python-bioinfo 
     networks:
       - appnetwork
     restart: always
