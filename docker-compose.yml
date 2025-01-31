@@ -22,6 +22,19 @@ services:
       - appnetwork
     restart: always
 
+  shiny-population-genomics:
+    image: population-genomics:latest
+    build:
+      context: ./apps/nucDNA_range-wide_SNPs_app
+      dockerfile: Dockerfile
+    volumes:
+      - /data/project-webapp/data/nucDNA_max/data_files:/srv/shiny-server/data_files
+    environment:
+      - DATA_PATH=/srv/shiny-server/data_files
+    networks:
+      - appnetwork
+    restart: always
+
   nginx:
     image: nginx:latest
     ports:
@@ -30,12 +43,14 @@ services:
     volumes:
       - ${NGINX_CONF:-./nginx/nginx.conf}:/etc/nginx/nginx.conf:ro
       - ./nginx/.htpasswd-ortholog-seeker:/etc/nginx/.htpasswd-ortholog-seeker:ro
+      - ./nginx/.htpasswd-population-genomics:/etc/nginx/.htpasswd-population-genomics:ro
       - ./nginx/.htpasswd-app1:/etc/nginx/.htpasswd-app1:ro
       - ./certbot/etc/letsencrypt:/etc/letsencrypt  # Mount Certbot configuration directory
       - ./certbot/www/:/var/www/letsencrypt
     depends_on:
       - shiny-app1
       - shiny-ortholog-seeker
+      - shiny-population-genomics
     networks:
       - appnetwork
     restart: always
